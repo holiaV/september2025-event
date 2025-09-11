@@ -1,0 +1,518 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>カナルタウン北 鮫釣り大会</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #fff8e5;
+      padding: 2em;
+      line-height: 1.8;
+    }
+    .main-title {
+      font-size: 2em;
+      color: #b8860b;
+      margin: 0;
+    }
+    .sub-title {
+      font-size: 1.2em;
+      color: #daa520;
+      margin: 0 0 1.5em 0;
+    }
+    .section {
+      margin-bottom: 2em;
+      padding: 1em;
+      background-color: #fff2cc; 
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(184, 134, 11, 0.3);
+    }
+    h2 {
+      color: #b8860b;
+      border-bottom: 2px solid #daa520;
+      padding-bottom: 0.3em;
+    }
+    ul {
+      list-style-type: square;
+      padding-left: 1.5em;
+    }
+    table {
+      border-collapse: collapse;
+      margin: 1em 0;
+      width: 100%;
+      max-width: 700px;
+    }
+    th, td {
+      border: 1px solid #b8860b;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #ffe5b4;
+    }
+    .note {
+      font-style: italic;
+      color: #aa5500;
+      margin-top: 0.5em;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="main-title">★カナルタウン北 鮫釣り大会</h1>
+  <h2 class="sub-title">～鮫と漁師と黄金郷～</h2>
+
+  <div class="section">
+    <h2>◆ 目的 ⭐</h2>
+    <ul>
+    <li>収集価値の高い「カッパーシャーク」をたくさん釣る<br>
+    <img src="カッパーシャーク.png" alt="カッパーシャーク" style="width:75px; margin-top: 0.5em;">
+    </li>
+  </div>
+
+  <div class="section">
+    <h2>◆ 参加資格 ✋</h2>
+    <ul>
+      <li>必要漁師レベルはLv100 ILは690～750(※出来れば高い方がいい)</li>
+      <li>黄金のレガシー最終マップ「リビングメモリー」に到達済み</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>◆ 勝利条件 👑</h2>
+    <ul>
+      <li>制限時間（30分）以内に最も多くスコアを稼いだチームが勝利となります。</li>
+      <li>スコアの基準は後述しますが、釣った数、収集価値の最大値、橙貨に交換した際の合計値がスコアになります。
+    </ul>
+  </div>
+  
+  <div class="section">
+    <h2>◆ ミラプリテーマ👚</h2>
+    <ol>
+      今回のテーマは<br>
+        <div style="font-size: 3.5em; color: #3498db; font-weight: bold; text-shadow: 2px 2px 4px #333; animation: pop 1.5s ease-in-out infinite alternate;">
+           エンジョイカナルタウン
+        </div>
+      です。<br>
+      まるで某ランドseaのような雰囲気のカナルタウンを満喫するような恰好を用意しておいてください。<br>
+      評価項目「エリアの雰囲気に合っている」「とにかくエンジョイしてそう」「溢れ出る黄金のlegacy感」
+    </ol>
+  </div>
+
+  <div class="section">
+    <h2>◆ 賞金 💰</h2>
+    <label for="totalPrize">賞金総額（ギル）:</label>
+    <input type="number" id="totalPrize" value="2000000" style="width: 150px;">
+    <label for="participantCount">参加人数:</label>
+    <select id="participantCount">
+      <option value="4">4名</option>
+      <option value="5">5名</option>
+      <option value="6">6名</option>
+      <option value="7">7名</option>
+      <option value="8">8名</option>
+      <option value="9">9名</option>
+      <option value="10">10名</option>
+      <option value="11">11名</option>
+      <option value="12">12名</option>
+    </select>
+    <button onclick="calculatePrize()">計算</button>
+
+    <table>
+      <thead>
+        <tr>
+          <th>勝者</th>
+          <th>それ以外</th>
+          <th>優勝チーム賞金</th>
+          <th>参加賞</th>
+        </tr>
+      </thead>
+      <tbody id="resultBody"></tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>◆ チーム分け 🧑‍🤝‍🧑</h2>
+    <p><strong>ダイスで完全ランダム</strong><br>
+    「/random」コマンドで出た数値の昇順で決定する。<br>
+    例：900 800 700 600 → 900＆800チーム、700＆600チーム</p>
+
+    <p><strong>参加人数が素数になったら？</strong><br>
+    参加人数が素数になった場合、「ソロPT」枠を無理やり追加します。<br>
+    ソロPTはその名の通り、チーム分けされずに独りで戦う「ソロディ〇ニーチーム」になります。<br>
+   「ソロ〇ィズニーチーム」は当然スコアで不利になってしまう為、スコア計算を変更します。<br>
+    （※シンプルに2倍はローリスクハイリターンになってしまうと判断）<br>
+    勝率は低いですが、もし優勝出来れば賞金は独り占めすることが出来ます。<br><br>
+
+    我こそはという方は是非「ソロディズ〇ーチーム」に立候補してみてください。<br>
+    勿論、希望者がいなければholiaさんが責任をもってその枠で参戦し、皆様と戦わせて頂きます。<br>
+
+    <p><strong>参加者人数とチーム構成：</strong><br>
+      4名：2 vs 2<br>
+      5名：2 vs 2 vs <span class="solo">1</span><br>
+      6名：2 vs 2 vs 2<br>
+      7名：2 vs 2 vs 2 vs <span class="solo">1</span><br>
+      8名：2 vs 2 vs 2 vs 2<br>
+      9名：3 vs 3 vs 3<br>
+      10名：2 vs 2 vs 2 vs 2 vs 2<br>
+      11名：2 vs 2 vs 2 vs 2 vs 2 vs <span class="solo">1</span><br>
+      12名：2 vs 2 vs 2 vs 2 vs 2 vs 2</p>
+  </div>
+
+  <div class="section">
+    <h2>◆ チームスコア計算 📊</h2>
+    <ul style="list-style: none; padding: 0; font-family: 'Segoe UI', sans-serif;">
+      <li style="margin-bottom: 2em; padding: 1em; border: 2px solid #4da6ff; border-radius: 12px; background: #f0f8ff;">
+        <strong style="font-size: 1.3em; color: #004080;"> 釣果数🎣</strong><br>
+        <img src="33.png" alt="トリプルフッキングの画像" /><br>
+        <span>チームメンバーが釣り上げたカッパーシャーク(収集品)の合計値 x ４００ｐｔ</span><br>
+        <span>例：メンバー全員の釣果数が10匹→４,０００ｐｔ</span><br>
+        <span>ソロPTの場合、釣り上げたカッパーシャーク(収集品)の合計値 x ７５０ｐｔ</span><br>
+      </li>
+      <li style="margin-bottom: 2em; padding: 1em; border: 2px solid #ffd54f; border-radius: 12px; background: #fffde7;">
+        <strong style="font-size: 1.3em; color: #b8860b;"> 最大収集価値📏</strong><br>
+        <img src="35.png" alt="大物の知識の画像" /><br>
+        <span>チームメンバーが釣り上げたカッパーシャーク(収集品)の中で最大の収集価値 x ２ｐｔ</span><br>
+        <span>例：メンバーが釣り上げた中で最も大きい収集価値が2500→５,０００ｐｔ</span><br>
+        <span>ソロPTの場合でも計算式は同じ。</span><br>
+      </li>
+      <li style="margin-bottom: 2em; padding: 1em; border: 2px solid #81c784; border-radius: 12px; background: #f1f8e9;">
+        <strong style="font-size: 1.3em; color: #2e7d32;"> 橙貨値🟠</strong><br>
+        <img src="18.png" alt="収集品採集の画像" /><br>
+        <span>チームメンバーが稼いだ橙貨(カッパーシャークを橙貨に変換した際)の合計値 x ５ｐｔ</span><br>
+        <span>例：メンバー全員の稼いだ橙貨の合計が970→４,８５０ｐｔ</span><br>
+        <span>ソロPTの場合、稼いだ橙貨(カッパーシャークを橙貨に変換した際)の合計値 x １０ｐｔ</span><br>
+      </li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>◆ 個人評価部門 🥇</h2>
+    <ul style="list-style: none; padding: 0; font-family: 'Segoe UI', sans-serif;">
+      <li style="margin-bottom: 2em; padding: 1em; border: 2px solid #4da6ff; border-radius: 12px; background: #f0f8ff;">
+        <strong style="font-size: 1.3em; color: #004080;"> たくさん釣ったで賞🎣</strong><br>
+        <img src="25.png" alt="ダブルフッキングの画像" /><br>
+        <span>最も多くカッパーシャーク(収集品)を釣り上げた者</span><br>
+        <span>賞金：300,000ギル</span><br>
+      </li>
+      <li style="margin-bottom: 2em; padding: 1em; border: 2px solid #ffd54f; border-radius: 12px; background: #fffde7;">
+        <strong style="font-size: 1.3em; color: #b8860b;"> 大物釣ったで賞📏</strong><br>
+        <img src="31.png" alt="大物狙いの画像" /><br>
+        <span>最も大きな(収集価値が高い)カッパーシャーク(収集品)を釣り上げた者</span><br>
+        <span>賞金：300,000ギル</span><br>
+      </li>
+      <li style="margin-bottom: 2em; padding: 1em; border: 2px solid #81c784; border-radius: 12px; background: #f1f8e9;">
+        <strong style="font-size: 1.3em; color: #2e7d32;"> 真っ先に釣ったで賞👑</strong><br>
+        <img src="03.png" alt="フッキングの画像" /><br>
+        <span>誰よりも早く最初の１匹を釣り上げた者</span><br>
+        <span>賞金：300,000ギル</span><br>
+      </li>
+      ※同率1位が複数いた場合は部門毎に1位の人数で賞金を頭割り
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>◆ その他ルール 📜</h2>
+    <ul>
+      <li>
+          制限時間終了後、キャスティング中であった場合は、継続してOK。<br>
+          制限時間が終了した段階で新たにキャスティングするのは禁止です。
+      </li>
+      <li>
+          餌はゴーストニッパー（FC支給）を使用 ※1人50個支給<br>
+          <img src="ゴーストニッパー.png" alt="ゴーストニッパー" style="width:75px; margin-top: 0.5em;"><br>
+          余りは個人で自由に。いらなかったらカンパニーチェストに返してね。
+      </li>
+      <li>
+          食事はナシゴレン(FC支給)を使用 ※1人1個支給<br>
+          <img src="ナシゴレン.png" alt="ナシゴレン" style="width:75px; margin-top: 0.5em;"><br>
+          みんな平等にGPをアップしよう。
+      </li>
+    </ul>
+  </div>
+  
+    <div class="section">
+    <h2>◆ ターゲット 🦈</h2>
+    <ul style="list-style: none; padding: 0; font-family: 'Segoe UI', sans-serif;">
+    <li style="margin-bottom: 2em; padding: 1em; border: 2px solid #fca17d; border-radius: 12px; background: #fff5f0;">
+      <strong style="font-size: 1.3em; color: #cc4400;"> カッパーシャーク</strong><br>
+      <img src="カッパーシャーク図鑑.png" alt="カッパーシャーク図鑑" style=="max-width: 100%; height: auto; margin: 0.5em 0;"><br>
+      <span>時間条件：無し</span><br>
+      <span>天候条件：曇り or 霧</span><br>
+      <span>特殊条件：直感付与</span><br>
+      <span>収集価値と獲得橙貨</span><br>
+      <span>1,141～：<strong>７８</strong></span><br>
+      <span>1,911～：<strong>９７</strong></span><br>
+      <span>2,682～：<strong>１５６</strong></span><br>
+    </li>
+    </ul>
+  </div>
+
+  <h2>◆釣り方🎣</h2>
+  <ol>
+    <li>リビングメモリーのカナルタウン北に向かう。</li>
+    <img src="カナルタウン北.png" alt="カナルタウン北" style="width:600px; margin-top: 0.5em;">
+    <li>【収集品採集】バフをONにする。<br>
+         このスキルをONにしないとカッパーシャークが収集品としてゲットできません。</li>
+        <img src="18.png" alt="収集品採集の画像" /><br>
+      </ul>
+    </li>
+    <li>【釣り餌】を使用し、「ゴーストニッパー」を選択する。</li>
+    <img src="01.png" alt="釣り餌の画像" />
+    <img src="ゴーストニッパー.png" alt="ゴーストニッパー" style="width:75px; margin-top: 0.5em;"><br>
+    <br>
+    <li>【キャスティング】を使用し、釣りを開始する。</li>
+    <img src="02.png" alt="キャスティングの画像" />
+    <br>
+    <li>【アンビシャスルアー】を１～３回使用し、直感が付与されるか確認する。<br>
+    <img src="36.png" alt="アンビシャスルアーの画像" /><br>
+    直感が付与された場合<br>
+    <video width="640" height="360" controls>
+    <source src="直感付与.mp4" type="video/mp4">
+    このブラウザは video タグをサポートしていません。
+    </video><br>
+    こんなメッセージが出る<br>
+    ※直感が付与された後に再度【アンビシャスルアー】を使用してしまうと直感がキャンセルされてしまうので注意！<br>
+    直感が付与されたらそのまま待機。<br>
+    ３回【アンビシャスルアー】を使用しても直感が付与されなかった場合は【竿上げ】を使用して釣りをキャンセルする。※４に戻る<br>
+    </li>
+    <li>強震(！！)が来たら【フッキング】を使用し、カッパーシャークを釣り上げる。<br>
+    <img src="03.png" alt="フッキングの画像" /><br>
+    長時間待ってからの強震(！！)はカッパーシャーク確定。<br>
+    すぐに来る強震(！！)は忘れられた魚とかいうハズレなので【竿上げ】を使用して釣りをキャンセルする。※４に戻る<br>
+    <img src="忘れられた魚.png" alt="忘れられた魚" style="width:75px; margin-top: 0.5em;"><br>
+    弱震(！)が来てもハズレなので【竿上げ】を使用して釣りをキャンセルする。※４に戻る<br>
+    </li>
+    <li>収集品獲得確認画面が出るので「はい」を選択しカッパーシャークを収集品にする。<br>
+    <img src="収集品確認画面.png" alt="収集品確認画面"><br>
+    ここで「いいえ」を押さないように。<br>
+    ※スコア集計対象外になります。
+    </li>
+    <li>上記手順を繰り返し、カッパーシャークを釣り続ける。
+      <ul>
+        <li>参考動画</li>
+        <video width="640" height="360" controls>
+        <source src="参考動画.mp4" type="video/mp4">
+        このブラウザは video タグをサポートしていません。
+        </video>
+      </ul>
+      <ul>
+        <li>とても分かりやすいフローチャート</li>
+        <img src="フローチャート.png" alt="フローチャート">
+      </ul>
+    </li>
+  </ol>
+  
+  <h2>◆高いスコアを狙うコツ✨</h2>
+    <li>【大物狙い】バフを使用する。
+      <ul>
+        <img src="31.png" alt="大物狙いの画像" /><br>
+        手順で言うと４の直前。次に釣り上げる魚のサイズが必ずラージサイズになる。<br>
+        【ペーシェンスⅡ】の使用は非推奨。<br>
+        【ペーシェンスⅡ】の効果時間中に4匹カッパーシャークが釣れれば【大物狙い】のGP効率を上回るが<br>
+        3匹までなら【大物狙い】の方がGP効率が良い。<br>
+        <table>
+          <tr>
+            <th></th>
+            <th>1匹目</th>
+            <th>2匹目</th>
+            <th>3匹目</th>
+            <th>4匹目</th>
+          </tr>
+          <tr>
+            <th>ペーシェンスⅡ</th>
+            <td>GP610</td>
+            <td>GP660</td>
+            <td>GP710</td>
+            <td>GP760</td>
+          </tr>
+          <tr>
+            <th>大物狙い</th>
+            <td>GP200</td>
+            <td>GP400</td>
+            <td>GP600</td>
+            <td>GP800</td>
+          </tr>
+        </table>
+        ※【ペーシェンスⅡ】の消費GPはバフにGP560、1匹毎にストロングフッキングGP50消費する計算
+      </ul>
+    </li>
+    <li>【大物の知識】バフを使用する。
+      <ul>
+        <img src="35.png" alt="大物の知識の画像" /><br>
+        同じく手順４の直前。次に釣り上げる魚の収集価値が高くなる。<br>
+        【大物狙い】と合わせて使う。
+      </ul>
+    </li>
+    <li>ハズレの魚を釣り上げない。
+      <ul>
+        <img src="06.png" alt="竿上げの画像" /><br>
+        ハズレの魚がかかった際に【フッキング】ではなく【竿上げ】をして釣りをキャンセルしよう。<br>
+        釣り上げの時間も無駄になる上に【大物狙い】のバフも釣り上げたら切れてしまう。<br>
+        ハズレの場合<br>
+        <video width="640" height="360" controls>
+        <source src="ハズレ動画.mp4" type="video/mp4">
+        このブラウザは video タグをサポートしていません。
+        </video><br>
+        アタリの場合<br>
+        <video width="640" height="360" controls>
+        <source src="アタリ動画.mp4" type="video/mp4">
+        このブラウザは video タグをサポートしていません。
+        </video><br>
+        ハズレのお魚たち<br>
+        <img src="カナルブリーム.png" alt="カナルブリーム" style="width:75px; margin-top: 0.5em;">
+        <img src="アイリス・ラス.png" alt="アイリス・ラス" style="width:75px; margin-top: 0.5em;">
+        <img src="デヴォーションクラム.png" alt="デヴォーションクラム" style="width:75px; margin-top: 0.5em;"><br>
+        弱震で釣れる奴ら。特に貝は【引っ掛け釣り】をONにしてないと出ないので間違っても【引っ掛け釣り】はONにしないほうがいい。<br>
+        <img src="忘れられた魚.png" alt="忘れられた魚" style="width:75px; margin-top: 0.5em;"><br>
+        強震で掛かるハズレ枠。【大物狙い】や【大物の知識】をこいつで消費しないように注意しよう。<br>
+      </ul>
+    </li>
+  
+  <h2>◆ スキル一覧 📖</h2>
+<style>
+  .skill-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 8px;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .skill-icon-name {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    min-width: 280px; /* 画像+スキル名幅 */
+  }
+
+  .skill-icon-name img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+
+  .skill-name {
+    font-weight: bold;
+    white-space: nowrap;
+  }
+
+  .skill-desc {
+    flex: 1;
+  }
+</style>
+</head>
+<body>
+
+<div class="skill-item">
+  <div class="skill-icon-name">
+    <img src="01.png" alt="釣り餌の画像" />
+    <div class="skill-name">【釣り餌】</div>
+  </div>
+  <div class="skill-desc">釣り餌を選ぶスキル。<br>ちゃんとゴーストニッパーを選ぼう。<br>※一応万能ルアーでも釣れるがHitが遅くなるよ</div>
+</div>
+
+<div class="skill-item">
+  <div class="skill-icon-name">
+    <img src="02.png" alt="キャスティングの画像" />
+    <div class="skill-name">【キャスティング】</div>
+  </div>
+  <div class="skill-desc">釣りを開始するスキル。<br>今回は泳がせ釣りは使用しない為、釣り開始スキルはこのスキルのみ。</div>
+</div>
+
+<div class="skill-item">
+  <div class="skill-icon-name">
+    <img src="03.png" alt="フッキングの画像" />
+    <div class="skill-name">【フッキング】</div>
+  </div>
+  <div class="skill-desc">釣り上げスキル。<br>今回の対象は収集品の為、釣り上げるスキルはこのスキルのみ。<br>※収集品の場合はダブルフッキングなどで釣っても数が増えないよ</div>
+</div>
+
+<div class="skill-item">
+  <div class="skill-icon-name">
+    <img src="06.png" alt="竿上げの画像" />
+    <div class="skill-name">【竿上げ】</div>
+  </div>
+  <div class="skill-desc">掛かった魚を釣らずに竿だけ上げるスキル。<br>直感が付かなかった時や、いらない魚がかかったときのキャンセルに使う。</div>
+</div>
+
+<div class="skill-item">
+  <div class="skill-icon-name">
+    <img src="07.png" alt="撒き餌の画像" />
+    <div class="skill-name">【撒き餌】</div>
+  </div>
+  <div class="skill-desc">魚が掛かるまでの時間を短縮するスキル。<br>キャンセルを多用することになるのでこれ使ってるとGP足りなくなりそう。<br>※釣果数部門個人優勝や最速釣り上げを狙うなら無しではないかも…？</div>
+</div>
+
+<div class="skill-item">
+  <div class="skill-icon-name">
+    <img src="18.png" alt="収集品採集の画像" />
+    <div class="skill-name">【収集品採集】</div>
+  </div>
+  <div class="skill-desc">絶対にONにすることを忘れないように。<br>これを忘れて収集品じゃないカッパーシャークを釣ってもスコアに換算しません。</div>
+</div>
+
+<div class="skill-item">
+  <div class="skill-icon-name">
+    <img src="31.png" alt="大物狙いの画像" />
+    <div class="skill-name">【大物狙い】</div>
+  </div>
+  <div class="skill-desc">次に釣る魚を確定でラージサイズにするスキル。<br>魚の収集品価値=大きさなのでラージサイズにすることは非常に重要。</div>
+</div>
+
+<div class="skill-item">
+  <div class="skill-icon-name">
+    <img src="35.png" alt="大物の知識の画像" />
+    <div class="skill-name">【大物の知識】</div>
+  </div>
+  <div class="skill-desc">ラージサイズの魚を釣ったときに溜まるBF(ビッグフィッシャー)を2消費して使うスキル。<br>次に釣る魚の収集価値を上げる効果。</div>
+</div>
+
+<div class="skill-item">
+  <div class="skill-icon-name">
+    <img src="36.png" alt="アンビシャスルアーの画像" />
+    <div class="skill-name">【アンビシャスルアー】</div>
+  </div>
+  <div class="skill-desc">細かい説明をするととても長くなるので超省略した説明になるが、今回の対象を狙う為に必要なスキル。<br>1回のフッキングで最大3回まで使用可能。<br>最初の消費GPは10だが、使用毎にGPが10ずつ高くなる。(10→20→30)</div>
+</div>
+
+  <script>
+    function calculatePrize() {
+      const totalPrize = parseInt(document.getElementById('totalPrize').value, 10);
+      const participantCount = parseInt(document.getElementById('participantCount').value, 10);
+      const tableBody = document.getElementById('resultBody');
+      tableBody.innerHTML = '';
+
+      const patterns = [];
+
+      if ([4, 6, 8, 10, 12].includes(participantCount)) {
+        patterns.push({ winners: 2 });
+      } else if (participantCount === 9) {
+        patterns.push({ winners: 3 });
+      } else if ([5, 7, 11].includes(participantCount)) {
+        patterns.push({ winners: 1 });
+        patterns.push({ winners: 2 });
+      }
+
+      patterns.forEach(pattern => {
+        const losers = participantCount - pattern.winners;
+        const winnerShare = Math.floor((totalPrize * 0.7) / pattern.winners);
+        const loserShare = Math.floor((totalPrize * 0.1) / losers);
+
+        const row = `<tr>
+          <td>${pattern.winners}</td>
+          <td>${losers}</td>
+          <td>${winnerShare.toLocaleString()} ギル</td>
+          <td>${loserShare.toLocaleString()} ギル</td>
+        </tr>`;
+
+        tableBody.insertAdjacentHTML('beforeend', row);
+      });
+    }
+  </script>
+
+</body>
+</html>
